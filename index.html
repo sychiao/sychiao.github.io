@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
@@ -9,25 +8,23 @@
         <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
     </head>
     <body>
-        <div>
-            <div id="Header" style="position: fixed;top: 0; width: 100%;">
-                <nav class="navbar is-spaced is-transparent has-shadow" role="navigation" aria-label="main navigation">
-                    <div class="navbar-brand">
-                        <h1 class="navbar-item">隨便寫寫，別太認真</h1>
-                    </div>
-
-                    <div id="about" class="navbar-start">
-                        <a class="navbar-item" style="font-size: 1.2em;">Home</a>
-                        <a class="navbar-item" style="font-size: 1.2em;">About</a>
-                    </div>
-
-                    <div class="navbar-end">
-                            xx
-                    </div>
-                </nav>
-                <progress id="read_progress" class="progress is-small" value="15" max="100" style="height:.25rem;border-radius:0px;">15%</progress>
-            </div>
+        <div id="Header" style="position: fixed;top: 0; width: 100%;">
+    <nav class="navbar is-transparent has-shadow" style="padding:0rem 2rem" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <h1 class="navbar-item">隨便寫寫，別太認真</h1>
         </div>
+
+        <div id="about" class="navbar-start">
+            <a class="navbar-item" style="font-size: 1.2em;" href="/">Home</a>
+            <a class="navbar-item" style="font-size: 1.2em;" href="/about.html">About</a>
+        </div>
+
+        <div class="navbar-end">
+                xx
+        </div>
+    </nav>
+    <progress id="read_progress" class="progress is-small" value="0" max="100" style="height:.25rem;border-radius:0px;">15%</progress>
+</div>
         <!--BODY-->
         <div id="body" style="margin-top: 130px;">
             <div class="hero-body" style="display: none;">
