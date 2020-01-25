@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ycsu's blog</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+        <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div>
+            <div id="Header" style="position: fixed;top: 0; width: 100%;">
+                <nav class="navbar is-spaced is-transparent has-shadow" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <h1 class="navbar-item">隨便寫寫，別太認真</h1>
+                    </div>
+
+                    <div id="about" class="navbar-start">
+                        <a class="navbar-item" style="font-size: 1.2em;">Home</a>
+                        <a class="navbar-item" style="font-size: 1.2em;">About</a>
+                    </div>
+
+                    <div class="navbar-end">
+                            xx
+                    </div>
+                </nav>
+                <progress id="read_progress" class="progress is-small" value="15" max="100" style="height:.25rem;border-radius:0px;">15%</progress>
+            </div>
+        </div>
+        <!--BODY-->
+        <div id="body" style="margin-top: 130px;">
+            <div class="hero-body" style="display: none;">
+                <div class="container">
+                    <h1 class="title">Hero title</h1>
+                    <h2 class="subtitle">Hero subtitle</h2>
+                </div>
+            </div>
+            <div class="field has-addons" style="margin: 2% 12%;display:none;">
+                <p class="control">
+                  <input class="input" type="text" placeholder="Find a post">
+                </p>
+                <p class="control">
+                  <button class="button">
+                    Search
+                  </button>
+                </p>
+            </div>
+            <section class="Body" style="margin: 3% 12%;border-top-right-radius: 4px;border-top-left-radius: 4px;border: 1px solid #ddd;">
+                <ul>
+                    
+                    <li>
+                        <div class="ArticleLists" style="margin: 0 20px;overflow: hidden;border-top: 1px solid #e7eaf1;">
+                            <div class="ArticleItem" style="padding: 15px 20px;">
+                                <div class="PublishDate"> 2019-03-03 </div>
+                                <a href="article/visitor.html" style="margin:10px 0"> 
+                                    <h1>visitor</h1>
+                                </a>
+                                <a style="margin:10px 0">
+                                    <p></p>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    
+                </ul>
+            </section>
+            <!---replace by madoko article-->
+        </div>
+        <script>
+            const progressBar = document.getElementById('read_progress')
+            const totalValue = document.body.scrollHeight - window.innerHeight
+        
+            $(window).scroll(function(){
+                let currentValue = document.scrollingElement.scrollTop
+                progressBar.value = (currentValue / totalValue) * 100
+            });
+        </script>
+    </body>
+</html>

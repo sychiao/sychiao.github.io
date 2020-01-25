@@ -1,0 +1,19 @@
+.frames {
+  border-top: 2px solid red;
+  border-bottom: 1px solid red;
+  width: 300px;
+  *zoom: 1;
+}
+.frames:after {
+  content: "";
+  display: table;
+  line-height: 0;
+  clear: both;
+}
+.frame{
+  display: inline-block;
+  width: 148px;
+  height: 50px;
+  border-bottom: 1px solid red;
+  float: left;
+}

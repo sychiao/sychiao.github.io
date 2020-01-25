@@ -1,0 +1,393 @@
+
+
+<div class="titleblock align-center para-block" data-line="5" style="text-align:center;line-adjust:0">
+<div class="titleheader align-center" data-line="5" style="text-align:center;line-adjust:0">
+<div class="title para-block" data-line="5" style="font-size:xx-large;font-weight:bold;margin-bottom:0.5ex;line-adjust:0"><span data-line="5"></span>Visitor 設計範式</div></div></div><span data-line="6"></span>
+<nav class="toc toc-contents"><h2 id="sec-contents" class="clearnum h1 heading-contents" data-heading-depth="1" style="display:block">Contents</h2>
+<div class="tocblock tocblock1">
+<div class="tocitem tocitem1" data-toc-target-elem="h1" data-toc-target="section" data-toc-depth="1" data-toc-line="[1]{.heading-label}.&#8194;\u554F\u984C\u60C5\u5883" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1</span>.&#8194;問題情境</a></div>
+<div class="tocblock tocblock2">
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="section" data-toc-depth="2" data-toc-line="[1.1]{.heading-label}.&#8194;\u554F\u984C\u5206\u6790" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1.1</span>.&#8194;問題分析</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="section" data-toc-depth="2" data-toc-line="[1.2]{.heading-label}.&#8194;\u554F\u984C\u7684\u672C\u8CEA" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1.2</span>.&#8194;問題的本質</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="sec-kind" data-toc-depth="2" data-toc-line="[1.3]{.heading-label}.&#8194;Kind\u7684\u5347\u7D1A\u7248" style="toctarget:sec-kind"><a href="#sec-kind" class="localref"><span class="heading-label">1.3</span>.&#8194;Kind的升級版</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="section" data-toc-depth="2" data-toc-line="[1.4]{.heading-label}.&#8194;\u6BD4\u8F03" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1.4</span>.&#8194;比較</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="section" data-toc-depth="2" data-toc-line="[1.5]{.heading-label}.&#8194;\u7D50\u8AD6\u8207\u5F8C\u7E8C" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1.5</span>.&#8194;結論與後續</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="sec-reference" data-toc-depth="2" data-toc-line="[1.6]{.heading-label}.&#8194;Reference" style="toctarget:sec-reference"><a href="#sec-reference" class="localref"><span class="heading-label">1.6</span>.&#8194;Reference</a></div>
+<div class="tocitem tocitem2" data-toc-target-elem="h2" data-toc-target="section" data-toc-depth="2" data-toc-line="[1.7]{.heading-label}.&#8194;\u6CE8" style="toctarget:section"><a href="#section" class="localref"><span class="heading-label">1.7</span>.&#8194;注</a></div></div></div></nav><h2 id="section" class="h1" data-line="8" data-heading-depth="1" style="display:block"><span data-line="8"></span><span class="heading-before"><span class="heading-label">1</span>.&#8194;</span><span data-line="8"></span>問題情境</h2>
+<p class="p noindent" data-line="9"><span data-line="9"></span>我們總是說程式就是資料結構加上演算法，我們幾乎到處都可以看到這樣的蹤跡，刷Leetcode時，起手勢肯定是先查一個STL的資料結構，可能是stack, list, 或是 map。然後才開始寫題目。如果是C++的使用者，這些資料結構的複雜度與使用場景也十分的重要。
+</p>
+<p class="p indent" data-line="11"><span data-line="11"></span>在更實際的專案裡，我們可能會自己實作一些資料結構，然而，當我們要實作這組資料結構的行為的時候，我們應該怎麼辦呢？例如說：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="14" data-line-first="15" style="display:block"><code data-line="15"><span style="color:blue">class</span> object{
+}
+
+<span style="color:blue">class</span> good : object{
+}
+
+<span style="color:blue">class</span> bad : object{
+}</code></pre>
+<p class="p noindent para-continued" data-line="25"><span data-line="25"></span>這是一個很簡單的例子，如果說我們需要寫一個計算good object數量的函數該怎麼辦呢？我們可以準備一個<span data-line="25"></span><code class="code code1">lengood</code><span data-line="25"></span>
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="28" data-line-first="29" style="display:block"><code data-line="29"><span style="color:teal">int</span> lengood(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> count = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        <span style="color:blue">if</span>(e-&gt;isgood()){
+            count++;
+        }
+    }
+    <span style="color:blue">return</span> count;
+}</code></pre>
+<p class="p noindent para-continued" data-line="40"><span data-line="40"></span>為了提供這個功能，我們必須替object準備isgood函數
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="42" data-line-first="43" style="display:block"><code data-line="43"><span style="color:blue">class</span> object{
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> isgood() { <span style="color:blue">return</span> <span style="color:blue">false</span>;}
+}
+
+<span style="color:blue">class</span> good : object{
+    <span style="color:teal">bool</span> isgood(){<span style="color:blue">return</span> <span style="color:blue">true</span>;}
+}
+
+<span style="color:blue">class</span> bad : object{
+    <span style="color:teal">bool</span> isgood(){<span style="color:blue">return</span> <span style="color:blue">false</span>;}
+}</code></pre>
+<p class="p noindent para-continued" data-line="56"><span data-line="56"></span>看起來還不錯，不過，什麼是好東西？蘋果顯然是好東西，一天一蘋果，醫生遠離我，貓咪可愛又討喜，也是好東西，所以我定義了<span data-line="56"></span><code class="code code1">apple</code><span data-line="56"></span>與<span data-line="56"></span><code class="code code1">class</code><span data-line="56"></span>。抽煙得肺癌，所<span data-line="56"></span><code class="code code1">smoke</code><span data-line="56"></span>是壞東西。所以我們有以下的<span data-line="56"></span><code class="code code1">class</code><span data-line="56"></span>，問題不大，透過OO一切都很好。但接下來可能就不是這麼順利了。
+</p>
+<pre class="para-block pre-fenced pre-fenced3" data-line="58" data-line-first="59" style="display:block"><code data-line="59">class apple : good{
+
+}
+class cat : good{
+
+}
+class smoke : bad{
+
+}</code></pre>
+<p class="p noindent para-continued" data-line="70"><span data-line="70"></span>我們可能需要一個生活快樂函數<span data-line="70"></span><code class="code code1">life_score</code><span data-line="70"></span>，遇到apple+1，cat+2,smoke+1。如法炮製，我們加上一個<span data-line="70"></span><code class="code code1">score</code><span data-line="70"></span>
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="72" data-line-first="73" style="display:block"><code data-line="73"><span style="color:blue">class</span> object{
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> isgood() { <span style="color:blue">return</span> <span style="color:blue">false</span>;}
+    <span style="color:blue">virtual</span> <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">0</span>;}
+}
+
+<span style="color:blue">class</span> apple : good{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">1</span>;}
+}
+<span style="color:blue">class</span> cat : good{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">2</span>;}
+}
+<span style="color:blue">class</span> smoke : bad{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">1</span>;}
+}
+
+<span style="color:teal">int</span> life_scroe(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        score += e-&gt;score();
+    }
+    <span style="color:blue">return</span> score;
+}</code></pre>
+<p class="p noindent para-continued" data-line="97"><span data-line="97"></span>這樣顯然還是不夠的，我們還需要生活健康函數，這個時候讓人過敏的貓咪與香菸都應該扣分，所以我們有<span data-line="97"></span><code class="code code1">health_score</code><span data-line="97"></span>
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="99" data-line-first="100" style="display:block"><code data-line="100"><span style="color:blue">class</span> object{
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> isgood() { <span style="color:blue">return</span> <span style="color:blue">false</span>;}
+    <span style="color:blue">virtual</span> <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">0</span>;}
+    <span style="color:blue">virtual</span> <span style="color:teal">int</span> health() {<span style="color:blue">return</span> <span class="constant" style="color:purple">0</span>;}
+}
+
+<span style="color:blue">class</span> apple : good{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">1</span>;}
+    <span style="color:teal">int</span> health() {<span style="color:blue">return</span> <span class="constant" style="color:purple">2</span>;}
+}
+<span style="color:blue">class</span> cat : good{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">2</span>;}
+    <span style="color:teal">int</span> health() {<span style="color:blue">return</span> -<span class="constant" style="color:purple">1</span>;}
+}
+<span style="color:blue">class</span> smoke : bad{
+    <span style="color:teal">int</span> score() {<span style="color:blue">return</span> <span class="constant" style="color:purple">1</span>;}
+    <span style="color:teal">int</span> health() {<span style="color:blue">return</span> -<span class="constant" style="color:purple">2</span>;}
+}
+
+<span style="color:teal">int</span> life_scroe(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        score += e-&gt;score();
+    }
+    <span style="color:blue">return</span> score;
+}
+
+<span style="color:teal">int</span> health_scroe(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        score += e-&gt;health();
+    }
+    <span style="color:blue">return</span> score;
+}</code></pre>
+<p class="p noindent para-continued" data-line="135"><span data-line="135"></span>OK，接下來我們來做code review，這隻程式的命名顯然有點問題，<span data-line="135"></span><code class="code code1">score</code><span data-line="135"></span>看起不知道是什麼（是life score呢）。所以，我們應該調整一下命名，改成跟<span data-line="135"></span><code class="code code1">health</code><span data-line="135"></span>一樣的<span data-line="135"></span><code class="code code1">life</code><span data-line="135"></span>似乎更好。不幸的是，所有的<span data-line="135"></span><code class="code code1">score</code><span data-line="135"></span>分散再不同的class，最糟糕的狀況是，分散再不同的檔案，如果你沒有強大的IDE支援，估計你必須要撞幾次編譯錯誤才搞得定了。
+</p><h3 id="section" class="h2" data-line="137" data-heading-depth="2" style="display:block"><span data-line="137"></span><span class="heading-before"><span class="heading-label">1.1</span>.&#8194;</span><span data-line="137"></span>問題分析</h3>
+<p class="p noindent" data-line="138"><span data-line="138"></span>這裡最大的問題在於，沒想到會有另外一個跟分數有關的功能，貿然的做了命名。不過這也不是我們的問題對吧，需求不是一次寫清楚的，這種失誤理所當然。不過，在工程當中這都是很常見的。
+另外一個問題，我們每次在新增功能，似乎都需要修改資料結構，這些資料結構的定義散落在不同文件的時候，就很有可能不小心遺漏而導致不正確的結果，這是另一個麻煩。
+</p><h3 id="section" class="h2" data-line="141" data-heading-depth="2" style="display:block"><span data-line="141"></span><span class="heading-before"><span class="heading-label">1.2</span>.&#8194;</span><span data-line="141"></span>問題的本質</h3>
+<p class="p noindent" data-line="142"><span data-line="142"></span>我們前面所遇到的問題到底是怎麼發生的？顯然class是關鍵，我們必須根據不同的class有不同的反應。而class就是type，也就是說，貪得無厭的我們，想要讓程式根據type有不同對應行為的時候，這個問題就發生了，這樣子的機制稱為多型，而且是動態的多型。
+</p>
+<p class="p indent" data-line="144"><span data-line="144"></span>我們想想如果現在是C語言的工作者，會如何定義前面的問題呢？我想他依然會準備一個class，然後再裏面放入kind的欄位。這麼一來，<span data-line="144"></span><code class="code code1">lengood</code><span data-line="144"></span>的函數就會變成：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="145" data-line-first="146" style="display:block"><code data-line="146"><span style="color:teal">int</span> lengood(list lst){
+    <span style="color:teal">int</span> count = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">good</span><span style="color:maroon">&quot;</span>){
+            count++;
+        }
+    }
+    <span style="color:blue">return</span> count;
+}</code></pre>
+<p class="p noindent para-continued" data-line="157"><span data-line="157"></span>這個想法很好，但是真正應用的時候卻沒這麼簡單，我們來看一個很典型，而且visitor最常被運用的例子，語法樹。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="158" data-line-first="159" style="display:block"><code data-line="159"><span style="color:blue">struct</span> expr {string kind;}
+<span style="color:blue">struct</span> num : expr {<span style="color:teal">int</span> val;}
+<span style="color:blue">struct</span> add : expr {expr *lhs, *rhs;}
+<span style="color:blue">struct</span> mul : expr {expr *lhs, *rhs;}</code></pre>
+<p class="p noindent para-continued" data-line="165"><span data-line="165"></span>但是，當kind是add或是mul時，val不會有值，反之，lhs及rhs在num下必須為num。接下來我們來實作，計算expr的函數calc:
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="167" data-line-first="168" style="display:block"><code data-line="168">calc(expr e){
+    <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">num</span><span style="color:maroon">&quot;</span>){
+        <span style="color:blue">return</span> e-&gt;val;
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">add</span><span style="color:maroon">&quot;</span>){
+        <span style="color:blue">return</span> calc(e-&gt;lhs) + calc(e-&gt;rhs)
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">mul</span><span style="color:maroon">&quot;</span>){
+        <span style="color:blue">return</span> calc(e-&gt;lhs) * calc(e-&gt;rhs)
+    }
+}</code></pre>
+<p class="p noindent para-continued" data-line="178"><span data-line="178"></span>這個實作還不錯，透過Kind的標記，但是這玩意是沒有辦法動的，因為e的型別是<span data-line="178"></span><code class="code code1">expr</code><span data-line="178"></span>他並不知道<span data-line="178"></span><code class="code code1">val/lhs/rhs</code><span data-line="178"></span>是什麼？那我們只好讓expr有這些資料欄位：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="180" data-line-first="181" style="display:block"><code data-line="181"><span style="color:blue">struct</span> expr {
+    string kind;
+    <span style="color:teal">int</span> val;
+    expr *lhs, *rhs;
+}</code></pre>
+<p class="p noindent para-continued" data-line="188"><span data-line="188"></span>不過，想必所有C++的用戶都享受過物件導向的美好，這個expr的資料結構實在是太丑了。因此，我們需要一個修正方案，就是轉型。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="189" data-line-first="190" style="display:block"><code data-line="190">calc(expr e){
+    <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">num</span><span style="color:maroon">&quot;</span>){
+        mul *e = <span style="color:blue">static_cast</span>&lt;val*&gt;(e);
+        <span style="color:blue">return</span> e-&gt;val;
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">add</span><span style="color:maroon">&quot;</span>){
+        mul *e = <span style="color:blue">static_cast</span>&lt;add*&gt;(e);
+        <span style="color:blue">return</span> calc(e-&gt;lhs) + calc(e-&gt;rhs)
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">mul</span><span style="color:maroon">&quot;</span>){
+        mul *e = <span style="color:blue">static_cast</span>&lt;mul*&gt;(e);
+        <span style="color:blue">return</span> calc(e-&gt;lhs) * calc(e-&gt;rhs)
+    }
+}</code></pre>
+<p class="p noindent para-continued" data-line="204"><span data-line="204"></span>讓我們改寫我們最早的例子吧：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="206" data-line-first="207" style="display:block"><code data-line="207"><span style="color:blue">class</span> object{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">object</span><span style="color:maroon">&quot;</span>;
+}
+
+<span style="color:blue">class</span> good : object{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">good</span><span style="color:maroon">&quot;</span>;
+}
+
+<span style="color:blue">class</span> bad : object{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">bad</span><span style="color:maroon">&quot;</span>;
+}
+
+<span style="color:blue">class</span> apple : good{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">apple</span><span style="color:maroon">&quot;</span>;
+}
+<span style="color:blue">class</span> cat : good{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">cat</span><span style="color:maroon">&quot;</span>;
+}
+<span style="color:blue">class</span> smoke : bad{
+    string kind=<span style="color:maroon">&quot;</span><span style="color:maroon">smoke</span><span style="color:maroon">&quot;</span>;
+}
+
+<span style="color:teal">int</span> life_scroe(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">num</span><span style="color:maroon">&quot;</span>)
+            score += <span class="constant" style="color:purple">1</span>;
+        <span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">add</span><span style="color:maroon">&quot;</span>)
+            score += <span class="constant" style="color:purple">2</span>;
+        <span style="color:blue">else</span> <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">mul</span><span style="color:maroon">&quot;</span>)
+            score += <span class="constant" style="color:purple">1</span>;
+    }
+    <span style="color:blue">return</span> score;
+}
+
+<span style="color:teal">int</span> lengood(list lst){
+    <span style="color:teal">int</span> count = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+        <span style="color:blue">if</span>(e-&gt;kind == <span style="color:maroon">&quot;</span><span style="color:maroon">good</span><span style="color:maroon">&quot;</span>){
+            count++;
+        }
+    }
+    <span style="color:blue">return</span> count;
+}</code></pre>
+<blockquote data-line="253">
+
+<p class="p noindent" data-line="253"><span data-line="253"></span><strong class="strong-star2">完美</strong><span data-line="253"></span>&#8230;<span data-line="253"></span>..
+</p></blockquote>
+<p class="p noindent" data-line="255"><span data-line="255"></span>個毛線，我們的<span data-line="255"></span><code class="code code1">lengood</code><span data-line="255"></span>再一次的壞掉了，因為我們把繼承<span data-line="255"></span><code class="code code1">good</code><span data-line="255"></span>kind的人替換成<span data-line="255"></span><code class="code code1">apple</code><span data-line="255"></span>之類的東西了，要修好這個解決方案，你的kind必須也是一個資料結構，記錄他們之間的類型關係才行。修修補補，補補修修。為什麼C<span data-line="255"></span>+<span data-line="255"></span>+沒有一個可以完美解決這些問題的終極方案呢？我只不過要拿個type而已啊。穩的沒有問題，其實可以這個方法就是<span data-line="255"></span><code class="code code1">dynamic_cast</code><span data-line="255"></span>：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="256" data-line-first="257" style="display:block"><code data-line="257">calc(expr e){
+    <span style="color:blue">if</span>(val *e = <span style="color:blue">dynamic_cast</span>&lt;val*&gt;(e)){
+        <span style="color:blue">return</span> e-&gt;val;
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(add *e = <span style="color:blue">dynamic_cast</span>&lt;add*&gt;(e)){
+        <span style="color:blue">return</span> calc(e-&gt;lhs) + calc(e-&gt;rhs)
+    }<span style="color:blue">else</span> <span style="color:blue">if</span>(mul *e = <span style="color:blue">dynamic_cast</span>&lt;mul*&gt;(e)){
+        <span style="color:blue">return</span> calc(e-&gt;lhs) * calc(e-&gt;rhs)
+    }
+}</code></pre>
+<p class="p noindent para-continued" data-line="267"><span data-line="267"></span>前一個例子我們也可以如法炮製
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="268" data-line-first="269" style="display:block"><code data-line="269"><span style="color:teal">int</span> lengood(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+      <span style="color:blue">if</span>(<span style="color:blue">auto</span> *ce = <span style="color:blue">dynamic_cast</span>&lt;good*&gt;(e))
+        score += <span class="constant" style="color:purple">1</span>;
+    }
+    <span style="color:blue">return</span> score;
+
+}
+
+<span style="color:teal">int</span> life_scroe(list&lt;object*&gt; lst){
+    <span style="color:teal">int</span> score = <span class="constant" style="color:purple">0</span>;
+    <span style="color:blue">for</span>(<span style="color:blue">auto</span> e : lst){
+      <span style="color:blue">if</span>(<span style="color:blue">auto</span> *ce = <span style="color:blue">dynamic_cast</span>&lt;apple*&gt;(e))
+        score += <span class="constant" style="color:purple">1</span>;
+      <span style="color:blue">else</span> <span style="color:blue">if</span>(<span style="color:blue">auto</span> *ce = <span style="color:blue">dynamic_cast</span>&lt;cat*&gt;(e))
+        score += <span class="constant" style="color:purple">2</span>;
+      <span style="color:blue">else</span> <span style="color:blue">if</span>(<span style="color:blue">auto</span> *ce = <span style="color:blue">dynamic_cast</span>&lt;smoke*&gt;(e))
+        score += <span class="constant" style="color:purple">1</span>;
+    }
+    <span style="color:blue">return</span> score;
+}</code></pre>
+<p class="p noindent para-continued" data-line="292"><span data-line="292"></span><code class="code code1">dynamic_cast</code><span data-line="292"></span>可以很好的應付這個問題，這個解法乾淨俐落，比起維護一個<span data-line="292"></span><code class="code code1">kind</code><span data-line="292"></span>這個機制更合理。不過呢，dynamic<span data-line="292"></span>_<span data-line="292"></span>cast實際上依賴一個稱為RTTI的技術，在使用這個方法的時候將會有大量個效能損失。但其實，我們有一個很經典但卻十分有用的機制，稱為Visitor Design Pattern。
+</p><h3 id="sec-kind" class="h2" data-line="294" data-heading-depth="2" style="display:block"><span data-line="294"></span><span class="heading-before"><span class="heading-label">1.3</span>.&#8194;</span><span data-line="294"></span>Kind的升級版</h3>
+<p class="p noindent" data-line="295"><span data-line="295"></span>我們現在已經知道了對付這問題的技巧與方法了（就是C的老方法），就是讓class自己本身告訴我你是什麼type。不過，這樣子的作法有個不算缺點的缺點，就是醜。而且顯然會對應一組巨大的if else表，看起來神煩，一點都不OO。所以我們發明了一個新的Kind。叫作<span data-line="295"></span><code class="code code1">accept</code><span data-line="295"></span>函數。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="297" data-line-first="298" style="display:block"><code data-line="298"><span style="color:blue">class</span> object{
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> accept(bVisitor *<span style="color:teal">V</span>) = <span class="constant" style="color:purple">0</span>;
+}
+
+<span style="color:blue">class</span> good : object{
+    <span style="color:teal">bool</span> accept(bVisitor *<span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>-&gt;good();}
+}
+
+<span style="color:blue">class</span> bad : object{
+    <span style="color:teal">bool</span> accept(bVisitor *<span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>-&gt;bad();}
+}</code></pre>
+<p class="p noindent para-continued" data-line="311"><span data-line="311"></span>我們讓accept自己呼叫good()函數以及bad()函數，這麼一來我們的功能都可以實作再名為bVisitor的類別裡。而且我們只要繼承bVisitor，改掉good()與bad()的功能就可以解決所有的問題了呢。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="313" data-line-first="314" style="display:block"><code data-line="314"><span style="color:blue">class</span> bVisitor{
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> good() = <span class="constant" style="color:purple">0</span>
+    <span style="color:blue">virtual</span> <span style="color:teal">bool</span> bad() = <span class="constant" style="color:purple">0</span>
+}
+
+<span style="color:blue">class</span> isgood : bVisitor{
+    <span style="color:teal">bool</span> good() { <span style="color:blue">return</span> <span style="color:blue">true</span>;}
+    <span style="color:teal">bool</span> bad() { <span style="color:blue">return</span> <span style="color:blue">false</span>;}
+}</code></pre>
+<p class="p noindent para-continued" data-line="325"><span data-line="325"></span>那麼，我們的expr class也可依樣畫葫蘆，不過，有點不同的是，當我們計算的時候，還需要索取資料結構的內容，而不是只要判對型別。所以，我們還必須讓函數本身可以吃一個參數，也就是自己。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="327" data-line-first="328" style="display:block"><code data-line="328"><span style="color:blue">class</span> expr {<span style="color:blue">virtual</span> <span style="color:teal">int</span> accept() = <span class="constant" style="color:purple">0</span>}
+<span style="color:blue">class</span> num : expr {
+    <span style="color:teal">int</span> val;
+    <span style="color:teal">int</span> accept(IVisitor <span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.num(<span style="color:blue">this</span>);}
+}
+<span style="color:blue">class</span> add : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> accept(IVisitor <span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.add(<span style="color:blue">this</span>);}
+}
+<span style="color:blue">class</span> mul : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> accept(IVisitor <span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.expr(<span style="color:blue">this</span>);}
+}
+
+<span style="color:blue">class</span> calc : <span style="color:teal">IVisitor</span> {
+    <span style="color:teal">int</span> num(num *n) {<span style="color:blue">return</span> n-&gt;val;}
+    <span style="color:teal">int</span> add(add *n) {<span style="color:blue">return</span> n-&gt;lhs-&gt;accept(calc) + n-&gt;rhs-&gt;accept(calc);}
+    <span style="color:teal">int</span> mul(mul *n) {<span style="color:blue">return</span> n-&gt;lhs-&gt;accept(calc) * n-&gt;lhs-&gt;accept(calc);}
+}</code></pre>
+<p class="p noindent para-continued" data-line="349"><span data-line="349"></span>在大部分的語言當中，我們允許函數的重載，所以顯然的Visitor內的函數也不需要特別稱呼不同的名字了，我們就一致的叫作<span data-line="349"></span><code class="code code1">visit()</code><span data-line="349"></span>。所以這組程式就變成了：
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="351" data-line-first="352" style="display:block"><code data-line="352"><span style="color:blue">class</span> expr {<span style="color:blue">virtual</span> <span style="color:teal">int</span> accept() = <span class="constant" style="color:purple">0</span>}
+<span style="color:blue">class</span> num : expr {
+    <span style="color:teal">int</span> val;
+    <span style="color:teal">int</span> accept(<span style="color:teal">IVisitor</span> *<span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.visit(<span style="color:blue">this</span>);}
+    <span style="color:darkgreen">//visit匹配visit(num *n)</span>
+}
+<span style="color:blue">class</span> add : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> accept(<span style="color:teal">IVisitor</span> *<span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.visit(<span style="color:blue">this</span>);}
+}
+<span style="color:blue">class</span> mul : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> accept(<span style="color:teal">IVisitor</span> *<span style="color:teal">V</span>){<span style="color:blue">return</span> <span style="color:teal">V</span>.visit(<span style="color:blue">this</span>);}
+}
+
+<span style="color:blue">class</span> calc : <span style="color:teal">IVisitor</span> {
+    <span style="color:teal">int</span> visit(num *n) {<span style="color:blue">return</span> n-&gt;val;}
+    <span style="color:teal">int</span> visit(add *n) {<span style="color:blue">return</span> n-&gt;lhs-&gt;accept(calc) + n-&gt;rhs-&gt;accept(calc);}
+    <span style="color:teal">int</span> visit(mul *n) {<span style="color:blue">return</span> n-&gt;lhs-&gt;accept(calc) * n-&gt;lhs-&gt;accept(calc);}
+}</code></pre><h3 id="section" class="h2" data-line="374" data-heading-depth="2" style="display:block"><span data-line="374"></span><span class="heading-before"><span class="heading-label">1.4</span>.&#8194;</span><span data-line="374"></span>比較</h3>
+<p class="p noindent" data-line="375"><span data-line="375"></span>對於這個動態多型的問題，我們有三種處理策略
+<span data-line="376"></span><em class="em-star1"> virtual function
+</em><span data-line="377"></span> dynamic<span data-line="377"></span>_<span data-line="377"></span>cast
+<span data-line="378"></span>*<span data-line="378"></span> visitor pattern
+</p>
+<p class="p indent" data-line="381"><span data-line="381"></span>首先，先比較速度，可以參考我的實作<span data-line="381"></span> <span data-line="381"></span><sup id="back-fn-github" ><a href="#fn-github" title="1.https://github.com/sychiao/Visitor_Example
+&#8617;" class="footnote-ref localref" ><span class="footnote-label">1</span></a></sup><span data-line="381"></span>
+| virtual function | dynamic<span data-line="382"></span>_<span data-line="382"></span>cast | visitor pattern |
+|<span data-line="383"></span> <span data-line="383"></span>&#8212;<span data-line="383"></span>&#8212;<span data-line="383"></span>&#8211;<span data-line="383"></span> |<span data-line="383"></span> <span data-line="383"></span>&#8212;<span data-line="383"></span>&#8212;<span data-line="383"></span>&#8211;<span data-line="383"></span> |<span data-line="383"></span> <span data-line="383"></span>&#8212;<span data-line="383"></span>&#8212;<span data-line="383"></span>&#8211;<span data-line="383"></span> |
+| 0.885s     | 0.998s     | 0.918s     |
+</p>
+<p class="p indent" data-line="388"><span data-line="388"></span>我們後兩者，主要是想要在新增功能的時候減少修改資料結構的開銷。儘管dynamic<span data-line="388"></span>_<span data-line="388"></span>cast的解法簡單漂亮，但是付出的代價卻是很大的。而visitor很好的調整了他們之間的平衡。
+</p><h3 id="section" class="h2" data-line="390" data-heading-depth="2" style="display:block"><span data-line="390"></span><span class="heading-before"><span class="heading-label">1.5</span>.&#8194;</span><span data-line="390"></span>結論與後續</h3>
+<p class="p noindent" data-line="391"><span data-line="391"></span>Visitor各種意義上非常的平凡，但是卻包裝的十分抽象。正是因為他的設計如此單純，而且副作用巨大（想想當我想要改資料結構的時候，我必須要付出的代價可能是所有visitor都要跟著改)，所以他充滿爭議，也有很多後續的變體。
+</p>
+<p class="p indent" data-line="393"><span data-line="393"></span>然而，話說從頭，其實我們就是渴望一個簡單一致的多型介面，我們很明確的用dynamic<span data-line="393"></span>_<span data-line="393"></span>cast展示了C++動態多型的真實威力，以及被稱為RTTI的代價。
+</p>
+<p class="p indent" data-line="395"><span data-line="395"></span>以LLVM來說，他放棄了標準庫的RTTI而自己從0打造了一個新的（就像我們的Kind一樣），而這麼做的C++ Library不再少數，每個C++ Library的作者都有想要無限加速Library的衝動。
+</p>
+<p class="p indent" data-line="397"><span data-line="397"></span>然而，Visitor展示了一個非常好的折衷方案，無需RTTI的快速，實作上也就只比STL的dynamic<span data-line="397"></span>_<span data-line="397"></span>cast複雜一點點而已。
+</p><h3 id="sec-reference" class="h2" data-line="400" data-heading-depth="2" style="display:block"><span data-line="400"></span><span class="heading-before"><span class="heading-label">1.6</span>.&#8194;</span><span data-line="400"></span>Reference</h3>
+<ol class="ol compact" data-line="401">
+<li class="li ol-li compact-li" data-line="401"><span data-line="401"></span>A Little Java, A few Patterns
+http://www.codemaster.blog/2008/04/scalas-pattern-matching-visitor-pattern.html
+</li></ol>
+<h3 id="section" class="h2" data-line="405" data-heading-depth="2" style="display:block"><span data-line="405"></span><span class="heading-before"><span class="heading-label">1.7</span>.&#8194;</span><span data-line="405"></span>注</h3>
+<p class="p noindent" data-line="406"><span data-line="406"></span>而在C++當中我們則會有expr.calc()。
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="408" data-line-first="409" style="display:block"><code data-line="409"><span style="color:blue">class</span> expr {<span style="color:blue">virtual</span> <span style="color:teal">int</span> calc() = <span class="constant" style="color:purple">0</span>}
+<span style="color:blue">class</span> num : expr {
+    <span style="color:teal">int</span> val;
+    <span style="color:teal">int</span> calc(){<span style="color:blue">return</span> val;}
+}
+<span style="color:blue">class</span> add : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> calc(){<span style="color:blue">return</span> lhs.calc() + rhs.calc();}
+}
+<span style="color:blue">class</span> mul : expr {
+    expr lhs,rhs;
+    <span style="color:teal">int</span> calc(){<span style="color:blue">return</span> lhs.calc() * rhs.calc();}
+}</code></pre>
+<p class="p noindent para-continued" data-line="425"><span data-line="425"></span>現在我們來想想，C++或的什麼好處，當我們新增一個資料結構，例如說指數
+</p>
+<pre class="para-block pre-fenced pre-fenced3 language-cpp lang-cpp cpp colorized" data-line="426" data-line-first="427" style="display:block"><code data-line="427"><span style="color:blue">class</span> exp : expr{}</code></pre>
+<p class="p noindent para-continued" data-line="429"><span data-line="429"></span>下面這個方法提供了很高的彈性，這個class只要實作一組calc一切的一切就解決了，相反的，C的版本要替所有的算法函數提供判斷與修改，哇歐，浩大工程，但是相反的，當我要替calc實作新的功能的時候，我也必須付出巨大的代價，因為資料結構的所有人都必須做出對應的修改。
+</p>
+<blockquote data-line="431">
+
+<p class="p noindent" data-line="431"><span data-line="431"></span>「稳定的数据结构和易变的操作耦合问题」
+</p></blockquote>
+<p class="p noindent" data-line="433"><span data-line="433"></span>此時這句話是不是開始變得明朗了呢，正是因為資料結構與算法會互相影響，所以我們有不同的「設計方法」，讓我們的資料結構更改變得容易，或是算法添加變得容易。
+</p>
+<p class="p indent" data-line="435"><span data-line="435"></span>https://gieseanw.wordpress.com/2018/12/29/stop-reimplementing-the-virtual-table-and-start-using-double-dispatch/
+</p><span data-line=""></span>
+<div class="footnotes madoko">
+<hr >
+
+<div id="fn-github" class="footnote" data-line="386" style="line-adjust:0">
+<p class="p noindent" data-line="386"><span data-line="386"></span><span class="footnote-before"><sup><span class="footnote-label">1</span>.</sup></span><span data-line="386"></span>https://github.com/sychiao/Visitor<span data-line="386"></span>_<span data-line="386"></span>Example
+<span data-line="387"></span><span data-line="387"></span><a href="#back-fn-github" class="footnote-backref localref">&#8617;</a></p></div></div>
