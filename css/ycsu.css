@@ -1,7 +1,6 @@
 .frames {
-  border-top: 2px solid red;
-  border-bottom: 1px solid red;
-  width: 300px;
+  border-top: 2px solid black;
+  border-bottom: 1px solid black;
   *zoom: 1;
 }
 .frames:after {
@@ -10,10 +9,23 @@
   line-height: 0;
   clear: both;
 }
+
+.col {
+  border-bottom: 1px solid black;
+  *zoom: 1;
+}
+.col:after {
+  content: "";
+  display: table;
+  line-height: 0;
+  clear: both;
+}
+
+
 .frame{
   display: inline-block;
-  width: 148px;
-  height: 50px;
-  border-bottom: 1px solid red;
+  width: 49%;
+  min-height: 50px;
   float: left;
+  padding: 1em 1em
 }
